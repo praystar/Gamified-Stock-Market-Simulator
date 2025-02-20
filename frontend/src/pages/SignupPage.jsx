@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 
 export default function SignupPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="flex w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="w-screen h-screen flex items-center justify-center bg-gray-100">
+      <div className="flex w-full h-auto max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
         {/* Left Side - Welcome Back */}
         <div className="w-1/2 bg-teal-500 text-white flex flex-col justify-center items-center p-8">
           <h2 className="text-3xl font-bold mb-4">Welcome Back!</h2>
