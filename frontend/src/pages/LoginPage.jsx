@@ -7,8 +7,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="flex w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="w-screen h-screen flex items-center justify-center bg-gray-100">
+      <div className="flex w-full h-auto max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden flex-grow">
         {/* Left Side - Sign In */}
         <div className="w-1/2 p-8 flex flex-col justify-center">
           <h2 className="text-3xl font-bold text-teal-600 text-center mb-4">StocKZ</h2>
