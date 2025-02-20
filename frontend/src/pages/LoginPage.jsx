@@ -1,11 +1,6 @@
 import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login attempted");
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="flex w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
@@ -21,7 +16,7 @@ export default function LoginPage() {
           
           <p className="text-gray-500 text-center mb-4">or use your email account:</p>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form className="space-y-4">
             <input
               type="email"
               placeholder="Email"
@@ -34,9 +29,7 @@ export default function LoginPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               required
             />
-            <a href="#" className="text-sm text-teal-500 hover:underline text-right block">
-              Forgot your password?
-            </a>
+            <p className="text-sm text-gray-500 text-right">Forgot your password?</p>
             <button
               type="submit"
               className="w-full bg-teal-500 text-white py-2 rounded-md font-semibold hover:bg-teal-600 transition"
