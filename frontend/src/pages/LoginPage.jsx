@@ -1,6 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // Add authentication logic here
+    navigate('/profile'); // Redirect to profile page
+  };
+
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gray-100">
       <div className="flex w-full h-auto max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden flex-grow">
@@ -16,17 +27,21 @@ export default function LoginPage() {
           
           <p className="text-gray-500 text-center mb-4">or use your email account:</p>
           
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleLogin}>
             <input
               type="email"
               placeholder="Email"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
             <input
               type="password"
               placeholder="Password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <p className="text-sm text-gray-500 text-right">Forgot your password?</p>

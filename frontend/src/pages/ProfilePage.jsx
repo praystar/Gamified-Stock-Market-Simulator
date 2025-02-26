@@ -77,12 +77,12 @@ const ProfilePage = () => {
     <div className="flex justify-between items-center text-center">
       <div>
         <p className="text-sm text-gray-400">Your Investment</p>
-        <p className="text-xl font-semibold text-white">$7,000</p>
+        <p className="text-xl font-semibold text-white">Rs 7,000</p>
       </div>
       
       <div>
         <p className="text-sm text-gray-400">Current Value</p>
-        <p className="text-xl font-semibold text-green-400">$8,241</p>
+        <p className="text-xl font-semibold text-green-400">Rs 8,241</p>
       </div>
       
       <div>

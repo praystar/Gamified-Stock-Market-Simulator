@@ -13,6 +13,7 @@ const Sidebar = () => {
         <SidebarLink to="/bonds" label="Bonds" />
         <SidebarLink to="/mutualfunds" label="Mutual Funds" />
         <SidebarLink to="/fixeddeposits" label="Fixed Deposits" />
+        <SidebarLink to="/library" label="Video Library" />
       </nav>
 
       {/* Logout Button */}
