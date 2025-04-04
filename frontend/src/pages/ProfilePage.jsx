@@ -1,4 +1,5 @@
-import React from "react";
+import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, Legend 
@@ -9,11 +10,11 @@ import Sidebar from "../components/Sidebar";
 
 // Stock Line Chart Data
 const stockData = [
-  { name: "Jan", value: 6000 },
-  { name: "Feb", value: 6200 },
-  { name: "Mar", value: 6100 },
-  { name: "Apr", value: 6300 },
-  { name: "May", value: 6480 },
+  { name: "Jan", value: 600000 },
+  { name: "Feb", value: 620000 },
+  { name: "Mar", value: 610000 },
+  { name: "Apr", value: 630000 },
+  { name: "May", value: 648000 },
 ];
 
 // Pie Chart Data
@@ -35,185 +36,135 @@ const stockAllocation = [
   { name: "Small Cap", value: 5.25, color: "#06b6d4" },
 ];
 
+// Format currency in Indian Rupees
+const formatRupees = (value) => {
+  return value.toLocaleString('en-IN', {
+    maximumFractionDigits: 0,
+    style: 'currency',
+    currency: 'INR'
+  });
+};
+
 const ProfilePage = () => {
+  const { user } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  
+  // Mock investment data - replace with real data
+  const investmentData = {
+    totalInvestments: '₹50,00,000',
+    portfolioValue: '₹55,00,000',
+    returns: '+10%'
+  };
+
   return (
-    <div className="flex min-h-screen bg-gray-900 text-gray-100">
-      
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-gray-900">Profile Settings</h1>
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          {isEditing ? 'Save Changes' : 'Edit Profile'}
+        </button>
+      </div>
 
-      <div className="flex-1 p-6">
-        {/* Header */}
-        <header className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">User Profile</h1>
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-gray-800 p-2 rounded-md text-gray-300"
-          />
-        </header>
-
-        {/* Stock Market Graph */}
+      {/* Profile Overview */}
+      <div className="bg-gray-50 rounded-lg p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="col-span-2">
-            <CardContent>
-              <h2 className="text-lg mb-4">Stock Exchange</h2>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={stockData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" stroke="#888" />
-                  <YAxis stroke="#888" />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="value" stroke="#4ade80" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Strength Meter */}
-          <Card className="h-[320px] bg-gray-800 text-white rounded-lg shadow-lg p-6">
-  <CardContent className="flex flex-col justify-between h-full">
-    <h2 className="text-lg font-semibold mb-4 text-gray-300">Strength Meter</h2>
-    
-    {/* ROI, Invested & Current Amount */}
-    <div className="flex justify-between items-center text-center">
-      <div>
-        <p className="text-sm text-gray-400">Your Investment</p>
-        <p className="text-xl font-semibold text-white">Rs 7,000</p>
-      </div>
-      
-      <div>
-        <p className="text-sm text-gray-400">Current Value</p>
-        <p className="text-xl font-semibold text-green-400">Rs 8,241</p>
-      </div>
-      
-      <div>
-        <p className="text-sm text-gray-400">ROI</p>
-        <p className="text-xl font-semibold text-green-500">+20.2%</p>
-      </div>
-    </div>
-
-    {/* Progress Bar */}
-    <div className="mt-4">
-      <Progress value={75} className="bg-green-500 h-3 rounded-full" />
-    </div>
-
-    {/* Invest Button */}
-    <button className="mt-6 w-full bg-purple-600 text-white font-semibold py-2 rounded-md hover:bg-purple-700 transition">
-      Invest
-    </button>
-  </CardContent>
-</Card>
-
-
+          <div className="flex items-center space-x-4">
+            <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+              <span className="text-xl font-semibold text-indigo-600">
+                {user?.name?.charAt(0) || 'U'}
+              </span>
+            </div>
+            <div>
+              <h2 className="text-lg font-medium text-gray-900">{user?.name || 'User'}</h2>
+              <p className="text-sm text-gray-500">Member since {user?.joinDate || 'N/A'}</p>
+            </div>
+          </div>
+          <div className="md:col-span-2">
+            <dl className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <dt className="text-sm font-medium text-gray-500">Total Investments</dt>
+                <dd className="mt-1 text-lg font-semibold text-gray-900">{investmentData.totalInvestments}</dd>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <dt className="text-sm font-medium text-gray-500">Portfolio Value</dt>
+                <dd className="mt-1 text-lg font-semibold text-gray-900">{investmentData.portfolioValue}</dd>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <dt className="text-sm font-medium text-gray-500">Returns</dt>
+                <dd className="mt-1 text-lg font-semibold text-green-600">{investmentData.returns}</dd>
+              </div>
+            </dl>
+          </div>
         </div>
+      </div>
 
-        {/* Stock Information Rectangles */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          <Card className="bg-gray-800 text-white">
-            <CardContent>
-              <h3 className="text-md font-medium mb-2">RELIANCE</h3>
-              <p className="text-lg font-bold">₹3,200</p>
-              <p className="text-sm text-green-400">+2.3% Today</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gray-800 text-white">
-            <CardContent>
-              <h3 className="text-md font-medium mb-2">HDFCBANK</h3>
-              <p className="text-lg font-bold">₹1,720</p>
-              <p className="text-sm text-red-400">-0.5% Today</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gray-800 text-white">
-            <CardContent>
-              <h3 className="text-md font-medium mb-2">Gold</h3>
-              <p className="text-lg font-bold">₹58,900</p>
-              <p className="text-sm text-green-400">+1.2% Today</p>
-            </CardContent>
-          </Card>
+      {/* Profile Details Form */}
+      <div className="bg-white rounded-lg shadow">
+        <div className="p-6 space-y-6">
+          <h3 className="text-lg font-medium text-gray-900">Personal Information</h3>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                disabled={!isEditing}
+                defaultValue={user?.name || ''}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:bg-gray-50 disabled:text-gray-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                disabled={!isEditing}
+                defaultValue={user?.email || ''}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:bg-gray-50 disabled:text-gray-500"
+              />
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Holdings Overview with Pie Charts */}
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Holdings Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Account Holdings Pie Chart */}
-            <Card>
-              <CardContent>
-                <h3 className="text-md font-medium mb-4">Account Holdings</h3>
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie 
-                      data={accountHoldings} 
-                      dataKey="value" 
-                      nameKey="name" 
-                      cx="50%" 
-                      cy="50%" 
-                      outerRadius={60} 
-                      fill="#8884d8"
-                      label
-                    >
-                      {accountHoldings.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Sector Allocation Pie Chart */}
-            <Card>
-              <CardContent>
-                <h3 className="text-md font-medium mb-4">Sector Allocation</h3>
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie 
-                      data={sectorAllocation} 
-                      dataKey="value" 
-                      nameKey="name" 
-                      cx="50%" 
-                      cy="50%" 
-                      outerRadius={60} 
-                      fill="#8884d8"
-                      label
-                    >
-                      {sectorAllocation.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Stock Allocation Pie Chart */}
-            <Card>
-              <CardContent>
-                <h3 className="text-md font-medium mb-4">Stock Allocation</h3>
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie 
-                      data={stockAllocation} 
-                      dataKey="value" 
-                      nameKey="name" 
-                      cx="50%" 
-                      cy="50%" 
-                      outerRadius={60} 
-                      fill="#8884d8"
-                      label
-                    >
-                      {stockAllocation.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+      {/* Investment Preferences */}
+      <div className="bg-white rounded-lg shadow">
+        <div className="p-6 space-y-6">
+          <h3 className="text-lg font-medium text-gray-900">Investment Preferences</h3>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Risk Tolerance</label>
+              <select
+                disabled={!isEditing}
+                defaultValue="moderate"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:bg-gray-50 disabled:text-gray-500"
+              >
+                <option value="conservative">Conservative</option>
+                <option value="moderate">Moderate</option>
+                <option value="aggressive">Aggressive</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Investment Goal</label>
+              <select
+                disabled={!isEditing}
+                defaultValue="growth"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:bg-gray-50 disabled:text-gray-500"
+              >
+                <option value="income">Income</option>
+                <option value="growth">Growth</option>
+                <option value="balanced">Balanced</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
