@@ -187,14 +187,14 @@ const FixedDeposits = () => {
               <option key={type} value={type}>{type}</option>
             ))}
           </select>
-          <div className="relative w-full sm:w-64">
-            <input
-              type="text"
+        <div className="relative w-full sm:w-64">
+          <input
+            type="text"
               placeholder="Search banks..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          />
           </div>
         </div>
       </div>
@@ -368,12 +368,12 @@ const FixedDeposits = () => {
                   if (index === filteredDeposits.length - 1) {
                     return (
                       <tr key={deposit.id} ref={lastDepositElementRef} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <span className="text-lg mr-2">{deposit.icon}</span>
                             <div className="text-sm font-medium text-gray-900">{deposit.bankName}</div>
-                          </div>
-                        </td>
+                      </div>
+                    </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{deposit.type}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">{deposit.interestRate}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{deposit.minAmount}</td>
@@ -382,28 +382,28 @@ const FixedDeposits = () => {
                           <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
                             Invest
                           </button>
-                        </td>
+                    </td>
                       </tr>
                     );
                   }
                   return (
                     <tr key={deposit.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <span className="text-lg mr-2">{deposit.icon}</span>
                           <div className="text-sm font-medium text-gray-900">{deposit.bankName}</div>
                         </div>
-                      </td>
+                    </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{deposit.type}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">{deposit.interestRate}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{deposit.minAmount}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{deposit.tenure}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
-                          Invest
-                        </button>
-                      </td>
-                    </tr>
+                        Invest
+                      </button>
+                    </td>
+                  </tr>
                   );
                 })}
               </tbody>

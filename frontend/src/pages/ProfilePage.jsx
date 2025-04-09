@@ -4,7 +4,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, Legend 
 } from "recharts";
-import { Card, CardContent } from "../components/ui/card";
+
 import Progress from "../components/ui/progress";
 import Sidebar from "../components/Sidebar";
 
