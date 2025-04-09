@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Card, CardContent } from "../components/ui/card";
+
 
 // Format currency in Indian Rupees
 const formatRupees = (value) => {
