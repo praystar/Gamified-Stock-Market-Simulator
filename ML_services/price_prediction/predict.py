@@ -22,6 +22,7 @@ except ImportError:
     )
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "saved_model", "lstm_model.keras")
+DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 
 # Cache model in memory so we don't reload on every request
 _model = None
@@ -53,8 +54,20 @@ def get_prediction(ticker_nse: str, pred_days: int = 7) -> dict:
             "change_percent": float
         }
     """
-    # 1. Fetch last ~2 years so we have 60+ rows after indicators drop NaN
-    raw_df = fetch_data(ticker_nse, period="2y")
+    # 1. Fetch live data, and fall back to local CSV if Yahoo is unavailable.
+    try:
+        raw_df = fetch_data(ticker_nse, period="2y")
+    except Exception as fetch_err:
+        ticker_base = ticker_nse.replace(".NS", "").upper()
+        local_csv = os.path.abspath(os.path.join(DATA_DIR, f"{ticker_base}.csv"))
+        if os.path.exists(local_csv):
+            raw_df = pd.read_csv(local_csv, parse_dates=["Date"], index_col="Date")
+            raw_df.sort_index(inplace=True)
+        else:
+            raise RuntimeError(
+                f"Live fetch failed for {ticker_nse}: {fetch_err}. "
+                f"No local fallback CSV found at {local_csv}."
+            )
     df_features = add_features(raw_df)
 
     # 2. Grab last known price (Close of today / last trading day)
@@ -67,12 +80,20 @@ def get_prediction(ticker_nse: str, pred_days: int = 7) -> dict:
     model = _get_model()
     scaler = load_scaler()
 
-    raw_pred = model.predict(X_input, verbose=0)  # shape (1, pred_days)
+    raw_pred = model.predict(X_input, verbose=0)  # shape (1, model_output_days)
+
+    model_output_days = raw_pred.shape[1]
+    if pred_days <= model_output_days:
+        pred_vector = raw_pred[0][:pred_days]
+    else:
+        # If caller asks for more days than model predicts, extend with last value.
+        pad_count = pred_days - model_output_days
+        pred_vector = np.concatenate([raw_pred[0], np.repeat(raw_pred[0][-1], pad_count)])
 
     # 5. Inverse-transform: rebuild a full-feature dummy array so scaler works
     n_features = len(FEATURES)
     dummy = np.zeros((pred_days, n_features))
-    dummy[:, 0] = raw_pred[0]  # Close is column 0
+    dummy[:, 0] = pred_vector  # Close is column 0
     inv = scaler.inverse_transform(dummy)
     predicted_closes = inv[:, 0].tolist()
 
