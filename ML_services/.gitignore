@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Secrets
+.env
+*.env
+
+# Model artifacts (too large for git — store on Hugging Face or Render disk)
+saved_model/*.keras
+saved_model/*.h5
+saved_model/*.pkl
+saved_model/*.pt
+
+# Data files (download from Kaggle separately)
+data/*.csv
+data/*.zip
+data/*.parquet
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
