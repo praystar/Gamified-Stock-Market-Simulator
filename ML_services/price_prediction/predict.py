@@ -10,10 +10,16 @@ import pandas as pd
 from datetime import datetime, timedelta
 from tensorflow.keras.models import load_model
 
-from preprocess import (
-    fetch_data, add_features, load_scaler,
-    prepare_inference_input, SEQUENCE_LENGTH, FEATURES
-)
+try:
+    from .preprocess import (
+        fetch_data, add_features, load_scaler,
+        prepare_inference_input, SEQUENCE_LENGTH, FEATURES
+    )
+except ImportError:
+    from preprocess import (
+        fetch_data, add_features, load_scaler,
+        prepare_inference_input, SEQUENCE_LENGTH, FEATURES
+    )
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "saved_model", "lstm_model.keras")
 

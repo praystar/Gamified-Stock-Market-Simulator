@@ -56,34 +56,62 @@ Each file has columns: `Date, Symbol, Series, Prev Close, Open, High, Low, Close
 
 ## ⚙️ Step 2 — Set Up Locally
 
+### Option A: Training only (fast setup, ~5 min)
 ```bash
-# 1. Create a Python virtual environment
-python -m venv venv
+# Create a Python 3.10 virtual environment
+python3.10 -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 
-# 2. Install dependencies
+# Install training dependencies only
+pip install -r price_prediction/requirements.txt
+
+# You can now train the model (see Step 3)
+```
+
+### Option B: Full setup with API (includes sentiment analysis)
+```bash
+# Create a Python 3.10 virtual environment
+python3.10 -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+
+# Install all dependencies
 pip install -r api/requirements.txt
 
-# 3. Copy env file and add your NewsAPI key
+# Copy env file and add your NewsAPI key
 cp api/.env.example api/.env
 # Edit api/.env and paste your free key from https://newsapi.org
 ```
+
+⚠️ **IMPORTANT:** Must use **Python 3.10**(not 3.11+, not 3.14). TensorFlow 2.16 is incompatible with Python 3.14.
 
 ---
 
 ## 🏋️ Step 3 — Train the Model
 
-### Option A — Train using yfinance (easiest, no CSV needed)
+### Option A — Train using yfinance (when available)
 ```bash
 cd price_prediction
 python train.py --ticker RELIANCE.NS --epochs 80
 ```
 
-### Option B — Train using Kaggle CSV
+### Option B — Train using local CSV (fallback if yfinance is down)
+```bash
+# First, generate synthetic test data
+cd ..
+python create_test_data.py
+
+# Then train
+cd price_prediction
+python train.py --csv ../data/RELIANCE.csv --ticker RELIANCE --epochs 80
+```
+
+### Option C — Train using your own Kaggle CSV
 ```bash
 cd price_prediction
 python train.py --csv ../data/RELIANCE.csv --ticker RELIANCE --epochs 80
 ```
+
+**Note:** If `yfinance` fails with `JSONDecodeError`, use **Option B** (local CSV) or **Option C** with your own data.
 
 This saves two files:
 - `price_prediction/saved_model/lstm_model.keras`

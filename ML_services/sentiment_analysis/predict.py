@@ -13,7 +13,11 @@ Setup:
 import os
 import requests
 from dotenv import load_dotenv
-from model import analyze_headlines, aggregate_sentiment
+
+try:
+    from .model import analyze_headlines, aggregate_sentiment
+except ImportError:
+    from model import analyze_headlines, aggregate_sentiment
 
 load_dotenv()
 
