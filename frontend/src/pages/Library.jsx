@@ -8,10 +8,10 @@ const Library = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState({
-    id: "dQw4w9WgXcQ",
-    title: "Investment Strategies for Beginners",
-    description: "Learn the basics of investing in the stock market",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"
+    id: "ZsFwHS0O8Uw",
+    title: "Stock Market for Beginners",
+    description: "Learn stock market fundamentals, key terms, and how investing works.",
+    thumbnail: "https://img.youtube.com/vi/ZsFwHS0O8Uw/maxresdefault.jpg"
   });
   const observer = useRef();
   const lastVideoElementRef = useRef();
