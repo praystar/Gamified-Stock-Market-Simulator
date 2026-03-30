@@ -19,6 +19,11 @@ try:
 except ImportError:
     from model import analyze_headlines, aggregate_sentiment
 
+# Load env from deterministic locations so NEWS_API_KEY works regardless of cwd.
+_THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+_ML_ROOT = os.path.dirname(_THIS_DIR)
+load_dotenv(os.path.join(_ML_ROOT, "api", ".env"))
+load_dotenv(os.path.join(_ML_ROOT, ".env"))
 load_dotenv()
 
 NEWS_API_KEY = os.getenv("NEWS_API_KEY", "")
@@ -36,12 +41,47 @@ DEMO_HEADLINES = {
         "TCS reports healthy margin expansion in Q3",
         "Tata Consultancy Services faces headwinds in BFSI segment",
     ],
+    "INFY": [
+        "Infosys raises annual revenue guidance after strong quarter",
+        "Infosys signs multi-year digital transformation contract",
+        "Infosys sees cautious spending in select global markets",
+    ],
+    "HDFCBANK": [
+        "HDFC Bank reports stable asset quality and strong loan growth",
+        "HDFC Bank expands branch network across tier-2 cities",
+        "Analysts flag near-term margin pressure for HDFC Bank",
+    ],
+    "ICICIBANK": [
+        "ICICI Bank posts better-than-expected quarterly profit",
+        "ICICI Bank credit growth remains resilient",
+        "ICICI Bank faces moderation in treasury gains",
+    ],
+    "WIPRO": [
+        "Wipro secures new cloud modernization deal",
+        "Wipro management guides for gradual recovery in demand",
+        "Wipro reports weak discretionary spending in some verticals",
+    ],
+    "SBIN": [
+        "State Bank of India posts robust net profit growth",
+        "SBI credit pipeline remains strong for corporate lending",
+        "SBI sees rising competition in deposit mobilization",
+    ],
     "DEFAULT": [
-        "Indian markets remain cautious amid global cues",
-        "FIIs continue buying in Indian equities",
-        "RBI holds repo rate steady in latest policy meet",
+        "Indian equities advance as banking and IT shares gain",
+        "Markets volatile amid global growth concerns and crude price risk",
+        "RBI keeps repo rate unchanged; investors watch earnings guidance",
     ]
 }
+
+
+def normalize_ticker(ticker: str) -> str:
+    """Normalize ticker to NSE base symbol for map/query compatibility."""
+    t = (ticker or "").strip().upper()
+    if t.endswith(".NS"):
+        t = t[:-3]
+    if t.endswith(".NSE"):
+        t = t[:-4]
+    return t
 
 
 def fetch_headlines(ticker: str, company_name: str, max_results: int = 10) -> list[str]:
@@ -49,12 +89,14 @@ def fetch_headlines(ticker: str, company_name: str, max_results: int = 10) -> li
     Fetch latest financial news headlines for a company.
     Falls back to demo headlines if NewsAPI key is not set.
     """
+    ticker_base = normalize_ticker(ticker)
+
     if not NEWS_API_KEY:
         print("⚠️  NEWS_API_KEY not set — using demo headlines.")
-        return DEMO_HEADLINES.get(ticker, DEMO_HEADLINES["DEFAULT"])
+        return DEMO_HEADLINES.get(ticker_base, DEMO_HEADLINES["DEFAULT"])
 
     params = {
-        "q": f"{company_name} OR {ticker} NSE stock",
+        "q": f"{company_name} OR {ticker_base} NSE stock",
         "language": "en",
         "sortBy": "publishedAt",
         "pageSize": max_results,
@@ -69,10 +111,10 @@ def fetch_headlines(ticker: str, company_name: str, max_results: int = 10) -> li
             a["title"] for a in articles
             if a.get("title") and "[Removed]" not in a["title"]
         ]
-        return headlines[:max_results] if headlines else DEMO_HEADLINES.get(ticker, DEMO_HEADLINES["DEFAULT"])
+        return headlines[:max_results] if headlines else DEMO_HEADLINES.get(ticker_base, DEMO_HEADLINES["DEFAULT"])
     except Exception as e:
         print(f"NewsAPI error: {e} — using demo headlines.")
-        return DEMO_HEADLINES.get(ticker, DEMO_HEADLINES["DEFAULT"])
+        return DEMO_HEADLINES.get(ticker_base, DEMO_HEADLINES["DEFAULT"])
 
 
 def get_sentiment(ticker: str, company_name: str) -> dict:
@@ -80,7 +122,8 @@ def get_sentiment(ticker: str, company_name: str) -> dict:
     Full pipeline: fetch news → FinBERT → aggregate.
     Called by FastAPI route.
     """
-    headlines = fetch_headlines(ticker, company_name, max_results=10)
+    ticker_base = normalize_ticker(ticker)
+    headlines = fetch_headlines(ticker_base, company_name, max_results=10)
     analyzed = analyze_headlines(headlines)
     overall_label, overall_score = aggregate_sentiment(analyzed)
 
@@ -91,7 +134,7 @@ def get_sentiment(ticker: str, company_name: str) -> dict:
     }
 
     return {
-        "ticker": ticker,
+        "ticker": ticker_base,
         "label": overall_label,
         "score": overall_score,
         "signal": signal_map[overall_label],

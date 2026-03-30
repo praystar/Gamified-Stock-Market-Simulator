@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from '../components/ui/card';
-import { getStockSentiment, COMPANY_NAMES } from "../services/mlApi";
+import { getStockSentiment, getQuickSentiment, COMPANY_NAMES } from "../services/mlApi";
 
 // Format currency in Indian Rupees
 const formatRupees = (value) => {
@@ -18,9 +18,9 @@ const generateStockData = (start, count) => {
     { name: "Reliance Industries", symbol: "RELIANCE", icon: "🏭" },
     { name: "HDFC Bank", symbol: "HDFCBANK", icon: "🏦" },
     { name: "Infosys Ltd", symbol: "INFY", icon: "🖥️" },
-    { name: "Bharti Airtel", symbol: "BHARTIARTL", icon: "📱" },
+    { name: "Wipro", symbol: "WIPRO", icon: "🧩" },
     { name: "State Bank of India", symbol: "SBIN", icon: "💰" },
-    { name: "ITC Ltd", symbol: "ITC", icon: "🚬" },
+    { name: "Axis Bank", symbol: "AXISBANK", icon: "🏢" },
     { name: "Hindustan Unilever", symbol: "HINDUNILVR", icon: "🧴" },
     { name: "ICICI Bank", symbol: "ICICIBANK", icon: "💳" },
     { name: "Kotak Mahindra Bank", symbol: "KOTAKBANK", icon: "🏛️" }
@@ -151,7 +151,15 @@ const Stocks = () => {
 
     try {
       const target = getSentimentTarget(tickerOverride);
-      const result = await getStockSentiment(target.ticker, target.companyName);
+      let result;
+
+      try {
+        result = await getStockSentiment(target.ticker, target.companyName);
+      } catch {
+        // Seamless fallback to quick endpoint if full pipeline fails.
+        result = await getQuickSentiment(target.ticker);
+      }
+
       setSentimentData(result);
       setSentimentTicker(target.ticker);
       setSelectedSentimentTicker(target.ticker);

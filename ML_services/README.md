@@ -96,19 +96,24 @@ python train.py --ticker RELIANCE.NS --epochs 80
 
 ### Option B — Train using local CSV (fallback if yfinance is down)
 ```bash
-# First, generate synthetic test data
+# First, generate synthetic fallback CSVs for common NSE stocks
 cd ..
 python create_test_data.py
 
-# Then train
+# Then train using the fallback basket (supports variable-day forecasts)
 cd price_prediction
-python train.py --csv ../data/RELIANCE.csv --ticker RELIANCE --epochs 80
+python train.py --data_dir ../data \
+  --tickers RELIANCE TCS INFY HDFCBANK ICICIBANK WIPRO SBIN BAJFINANCE MARUTI TITAN \
+  --pred_days 30 --epochs 30
 ```
+
+This creates fallback CSV files in `ML_services/data/` for:
+`RELIANCE, TCS, INFY, HDFCBANK, ICICIBANK, WIPRO, SBIN, BAJFINANCE, MARUTI, TITAN`.
 
 ### Option C — Train using your own Kaggle CSV
 ```bash
 cd price_prediction
-python train.py --csv ../data/RELIANCE.csv --ticker RELIANCE --epochs 80
+python train.py --csv ../data/RELIANCE.csv --ticker RELIANCE --pred_days 30 --epochs 80
 ```
 
 **Note:** If `yfinance` fails with `JSONDecodeError`, use **Option B** (local CSV) or **Option C** with your own data.

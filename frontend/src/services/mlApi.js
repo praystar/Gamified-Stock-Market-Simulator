@@ -14,12 +14,19 @@
  *   VITE_ML_API_URL=https://gamzstockz-ml-api.onrender.com
  */
 
-const ML_API_BASE_URL =
-  import.meta.env.VITE_ML_API_URL || "https://gamzstockz-ml-api.onrender.com";
+const DEFAULT_API_BASE_URL = import.meta.env.DEV
+  ? "http://localhost:8000"
+  : "https://gamzstockz-ml-api.onrender.com";
+
+const ML_API_BASE_URL = import.meta.env.VITE_ML_API_URL || DEFAULT_API_BASE_URL;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 async function apiFetch(path, options = {}) {
+  if (import.meta.env.DEV) {
+    console.info(`[ML API] ${options.method || "GET"} ${ML_API_BASE_URL}${path}`);
+  }
+
   const res = await fetch(`${ML_API_BASE_URL}${path}`, {
     headers: { "Content-Type": "application/json" },
     ...options,
