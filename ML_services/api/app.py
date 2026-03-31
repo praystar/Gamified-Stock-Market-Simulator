@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.prediction import router as prediction_router
@@ -15,10 +17,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Allow requests from your Netlify/Vercel frontend
+# Comma-separated list, e.g. "https://yourapp.vercel.app,https://yourapp.netlify.app"
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
+allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
+
+# Allow requests from deployed frontend(s)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with your frontend URL in production e.g. ["https://your-app.netlify.app"]
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
