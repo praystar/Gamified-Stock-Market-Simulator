@@ -8,7 +8,9 @@ services:
     envVars:
       - key: NEWS_API_KEY
         sync: false         # you'll set this in Render dashboard
+      - key: ALLOWED_ORIGINS
+        sync: false         # set to your frontend URL(s), comma-separated
       - key: PYTHON_VERSION
-        value: "3.11.0"
+        value: "3.10.13"
     healthCheckPath: /health
     autoDeploy: true

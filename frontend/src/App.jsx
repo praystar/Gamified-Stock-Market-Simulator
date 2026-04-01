@@ -13,6 +13,7 @@ import Bonds from "./pages/Bonds";
 import MutualFunds from "./pages/MutualFunds";
 import FixedDeposits from "./pages/FixedDeposits";
 import Library from "./pages/Library";
+import MLDashboard from "./pages/MLDashboard";
 
 function App() {
   return (
@@ -111,6 +112,16 @@ function App() {
                 <ProtectedRoute>
                   <DashboardLayout>
                     <Library />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ml-insights"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <MLDashboard />
                   </DashboardLayout>
                 </ProtectedRoute>
               }
@@ -217,6 +228,16 @@ const DashboardLayout = ({ children }) => {
                   } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
                 >
                   Library
+                </Link>
+                <Link
+                  to="/ml-insights"
+                  className={`${
+                    isActivePath('/ml-insights')
+                      ? 'border-indigo-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+                >
+                  AI Insights
                 </Link>
               </div>
             </div>
